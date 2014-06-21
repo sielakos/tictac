@@ -1,8 +1,6 @@
 class TicTacGame
   constructor: (@game) ->
-    @currentTile = 0
-    @simpleGameState = ((-1 for j in [0..20]) for i in [0..20])
-    @firstPlayer = true
+    @ticTacModel = new TicTacToeGameModel 20
 
   preload: =>
     @game.load.image 'tiles', 'tiles.png'
@@ -15,7 +13,7 @@ class TicTacGame
     @map = @game.add.tilemap();
     @map.addTilesetImage 'tiles'
 
-    @layer = @map.create 'level', 20, 20, 32, 32
+    @layer = @map.create 'level', @ticTacModel.mapSize, @ticTacModel.mapSize, 32, 32
     @layer.resizeWorld()
 
     @game.input.setMoveCallback @updateMarker, this
@@ -34,13 +32,13 @@ class TicTacGame
     @lines = @game.add.graphics()
     @lines.lineStyle 1, 0x00ff00, 1
 
-    for i in [1..19]
+    for i in [1..@ticTacModel.mapSize]
       @lines.moveTo 0, i*32
-      @lines.lineTo 20*32, i*32
+      @lines.lineTo @ticTacModel.mapSize*32, i*32
 
-    for i in [1..19]
+    for i in [1..@ticTacModel.mapSize]
       @lines.moveTo i*32, 0
-      @lines.lineTo i*32, 20*32
+      @lines.lineTo i*32, @ticTacModel.mapSize*32
 
   updateMarker: =>
     @pointerMoved = true
@@ -55,11 +53,10 @@ class TicTacGame
       @setGameField tileX, tileY
 
   setGameField: (tileX, tileY) =>
-    if @simpleGameState[tileX][tileY] == -1
-      currentTile = if @firstPlayer then 0 else 1
-      @firstPlayer = not @firstPlayer
-      @map.putTile currentTile, tileX, tileY, @layer
-      @simpleGameState[tileX][tileY] = currentTile
+    if @ticTacModel.isMoveAllowed tileX, tileY
+      @ticTacModel.setField tileX, tileY
+      @map.putTile @ticTacModel.getTileNumber(), tileX, tileY, @layer
+
 
   update: =>
     tileX = @layer.getTileX @marker.x
