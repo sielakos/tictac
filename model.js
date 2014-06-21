@@ -50,8 +50,14 @@
     TicTacToeGameModel.prototype.isGameFinished = function() {};
 
     TicTacToeGameModel.prototype.getDirection = function(x, y, dirX, dirY) {
-      var fields;
-      return fields = [this.stage];
+      var fields, i, _i;
+      fields = [this.stage[x][y]];
+      for (i = _i = 1; _i <= 4; i = ++_i) {
+        x += dirX;
+        y += dirY;
+        fields.push(this.stage[x][y]);
+      }
+      return fields;
     };
 
     return TicTacToeGameModel;
