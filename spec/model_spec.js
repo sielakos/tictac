@@ -13,6 +13,15 @@
       }
       return _results;
     });
+    it('isMoveAllowed checks if tile is within stage bounds and tile is free', function() {
+      expect(this.model.isMoveAllowed(1, 2)).toBe(true);
+      expect(this.model.isMoveAllowed(-1, 2)).toBe(false);
+      expect(this.model.isMoveAllowed(40, 2)).toBe(false);
+      expect(this.model.isMoveAllowed(4, 26)).toBe(false);
+      expect(this.model.isMoveAllowed(1, 4)).toBe(true);
+      this.model.stage[1][4] = 1;
+      return expect(this.model.isMoveAllowed(1, 4)).toBe(false);
+    });
     return it('getDirection works correctly', function() {
       var fields;
       this.model.stage[10][10] = 1;

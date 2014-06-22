@@ -27,7 +27,11 @@
     }
 
     TicTacToeGameModel.prototype.isMoveAllowed = function(tileX, tileY) {
-      return this.stage[tileX][tileY] === -1;
+      return (this.isWithinStageBounds(tileX, tileY)) && this.stage[tileX][tileY] === -1;
+    };
+
+    TicTacToeGameModel.prototype.isWithinStageBounds = function(tileX, tileY) {
+      return tileX >= 0 && tileY >= 0 && tileX < this.mapSize && tileY < this.mapSize;
     };
 
     TicTacToeGameModel.prototype.setField = function(tileX, tileY) {
@@ -55,7 +59,9 @@
       for (i = _i = 1; _i <= 4; i = ++_i) {
         x += dirX;
         y += dirY;
-        fields.push(this.stage[x][y]);
+        if (this.isWithinStageBounds(x, y)) {
+          fields.push(this.stage[x][y]);
+        }
       }
       return fields;
     };

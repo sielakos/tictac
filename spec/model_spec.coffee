@@ -2,11 +2,21 @@ describe 'TicTacToeGameModel', ->
   beforeEach ->
     @model = new TicTacToeGameModel 20
 
-
   it 'stage has correct size', ->
     expect(@model.stage.length).toBe 20
     for i in [0..19]
       expect(@model.stage[i].length).toBe 20
+
+  it 'isMoveAllowed checks if tile is within stage bounds and tile is free', ->
+    expect(@model.isMoveAllowed 1, 2).toBe true
+    expect(@model.isMoveAllowed -1, 2).toBe false
+    expect(@model.isMoveAllowed 40, 2).toBe false
+    expect(@model.isMoveAllowed 4, 26).toBe false
+
+    expect(@model.isMoveAllowed 1, 4).toBe true
+
+    @model.stage[1][4] = 1
+    expect(@model.isMoveAllowed 1, 4).toBe false
 
   it 'getDirection works correctly', ->
     @model.stage[10][10] = 1

@@ -7,7 +7,10 @@ class @TicTacToeGameModel
       y: Math.round mapSize/2
 
   isMoveAllowed: (tileX, tileY) ->
-    @stage[tileX][tileY] == -1
+    (@isWithinStageBounds tileX, tileY) and @stage[tileX][tileY] == -1
+
+  isWithinStageBounds: (tileX, tileY) ->
+    tileX >= 0 and tileY >= 0 and tileX < @mapSize and tileY < @mapSize
 
   setField: (tileX, tileY) ->
     @stage[tileX][tileY] = if @firstPlayer then 0 else 1
@@ -29,6 +32,6 @@ class @TicTacToeGameModel
       x += dirX
       y += dirY
 
-      fields.push @stage[x][y]
+      fields.push @stage[x][y] if @isWithinStageBounds x, y
 
     fields
