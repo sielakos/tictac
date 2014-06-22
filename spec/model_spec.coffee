@@ -18,6 +18,33 @@ describe 'TicTacToeGameModel', ->
     @model.stage[1][4] = 1
     expect(@model.isMoveAllowed 1, 4).toBe false
 
+  it 'setField sets current player in given tile', ->
+    @model.setField 1, 2
+    expect(@model.stage[1][2]).toBe 0
+
+    @model.setField 1, 3
+    expect(@model.stage[1][3]).toBe 1
+
+  it 'setFields sets last move', ->
+    @model.setField 1, 2
+    expect(@model.lastMove.x).toBe 1
+    expect(@model.lastMove.y).toBe 2
+
+    @model.setField 1, 4
+    expect(@model.lastMove.x).toBe 1
+    expect(@model.lastMove.y).toBe 4
+
+  it 'setFields changes player', ->
+    player = @model.firstPlayer
+
+    @model.setField 1, 2
+    expect(@model.firstPlayer).not.toBe player
+
+    @model.setField 1, 2
+    expect(@model.firstPlayer).toBe player
+
+
+
   it 'getDirection works correctly', ->
     @model.stage[10][10] = 1
     @model.stage[10][11] = 0

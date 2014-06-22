@@ -22,6 +22,28 @@
       this.model.stage[1][4] = 1;
       return expect(this.model.isMoveAllowed(1, 4)).toBe(false);
     });
+    it('setField sets current player in given tile', function() {
+      this.model.setField(1, 2);
+      expect(this.model.stage[1][2]).toBe(0);
+      this.model.setField(1, 3);
+      return expect(this.model.stage[1][3]).toBe(1);
+    });
+    it('setFields sets last move', function() {
+      this.model.setField(1, 2);
+      expect(this.model.lastMove.x).toBe(1);
+      expect(this.model.lastMove.y).toBe(2);
+      this.model.setField(1, 4);
+      expect(this.model.lastMove.x).toBe(1);
+      return expect(this.model.lastMove.y).toBe(4);
+    });
+    it('setFields changes player', function() {
+      var player;
+      player = this.model.firstPlayer;
+      this.model.setField(1, 2);
+      expect(this.model.firstPlayer).not.toBe(player);
+      this.model.setField(1, 2);
+      return expect(this.model.firstPlayer).toBe(player);
+    });
     it('getDirection works correctly', function() {
       var fields;
       this.model.stage[10][10] = 1;
