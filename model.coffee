@@ -25,6 +25,15 @@ class @TicTacToeGameModel
   isGameFinished: ->
 
 
+
+  createDirectionChangers: ->
+    directions = []
+    for i in [-1..1]
+      for j in [-1..1]
+        if i != 0 or j != 0
+          directions.push [i, j]
+    directions
+
   getDirection: (x, y, dirX, dirY) ->
     fields = []
 

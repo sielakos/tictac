@@ -65,13 +65,25 @@
       fields = this.model.getDirection(9, 11, 1, -1);
       return expect(fields).toEqual([-1, 1, -1, -1, -1]);
     });
-    return it('getDirection does not go outside stage bounds', function() {
+    it('getDirection does not go outside stage bounds', function() {
       var fields;
       fields = this.model.getDirection(18, 18, 1, 1);
       expect(fields.length).toBeLessThan(5);
       expect(fields.length).toBe(2);
       fields = this.model.getDirection(25, 18, 1, 1);
       return expect(fields.length).toBe(0);
+    });
+    return it('createDirectionChangers creates all 8 direction changers', function() {
+      var changer, dirChangers, expectedDirChangers, _i, _len, _results;
+      dirChangers = this.model.createDirectionChangers();
+      expect(dirChangers.length).toBe(8);
+      expectedDirChangers = [[1, 1], [1, 0], [1, -1], [0, 1], [0, -1], [-1, 1], [-1, 0], [-1, -1]];
+      _results = [];
+      for (_i = 0, _len = expectedDirChangers.length; _i < _len; _i++) {
+        changer = expectedDirChangers[_i];
+        _results.push(expect(dirChangers).toContain(changer));
+      }
+      return _results;
     });
   });
 

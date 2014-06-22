@@ -53,6 +53,19 @@
 
     TicTacToeGameModel.prototype.isGameFinished = function() {};
 
+    TicTacToeGameModel.prototype.createDirectionChangers = function() {
+      var directions, i, j, _i, _j;
+      directions = [];
+      for (i = _i = -1; _i <= 1; i = ++_i) {
+        for (j = _j = -1; _j <= 1; j = ++_j) {
+          if (i !== 0 || j !== 0) {
+            directions.push([i, j]);
+          }
+        }
+      }
+      return directions;
+    };
+
     TicTacToeGameModel.prototype.getDirection = function(x, y, dirX, dirY) {
       var fields, i, _i;
       fields = [];

@@ -78,3 +78,22 @@ describe 'TicTacToeGameModel', ->
 
     fields = @model.getDirection 25, 18, 1, 1
     expect(fields.length).toBe 0
+
+  it 'createDirectionChangers creates all 8 direction changers', ->
+    dirChangers =  @model.createDirectionChangers()
+
+    expect(dirChangers.length).toBe 8
+
+    expectedDirChangers = [
+      [1, 1],
+      [1, 0],
+      [1, -1],
+      [0, 1],
+      [0, -1],
+      [-1, 1],
+      [-1, 0],
+      [-1, -1]
+    ]
+
+    for changer in expectedDirChangers
+      expect(dirChangers).toContain changer
