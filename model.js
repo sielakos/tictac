@@ -55,13 +55,13 @@
 
     TicTacToeGameModel.prototype.getDirection = function(x, y, dirX, dirY) {
       var fields, i, _i;
-      fields = [this.stage[x][y]];
-      for (i = _i = 1; _i <= 4; i = ++_i) {
-        x += dirX;
-        y += dirY;
+      fields = [];
+      for (i = _i = 0; _i <= 4; i = ++_i) {
         if (this.isWithinStageBounds(x, y)) {
           fields.push(this.stage[x][y]);
         }
+        x += dirX;
+        y += dirY;
       }
       return fields;
     };

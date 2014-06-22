@@ -45,3 +45,11 @@ describe 'TicTacToeGameModel', ->
 
     fields = @model.getDirection 9, 11, 1, -1
     expect(fields).toEqual [-1, 1, -1, -1, -1]
+
+  it 'getDirection does not go outside stage bounds', ->
+    fields = @model.getDirection 18, 18, 1, 1
+    expect(fields.length).toBeLessThan 5
+    expect(fields.length).toBe 2
+
+    fields = @model.getDirection 25, 18, 1, 1
+    expect(fields.length).toBe 0

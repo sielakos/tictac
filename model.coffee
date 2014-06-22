@@ -26,12 +26,11 @@ class @TicTacToeGameModel
 
 
   getDirection: (x, y, dirX, dirY) ->
-    fields = [@stage[x][y]]
+    fields = []
 
-    for i in [1..4]
+    for i in [0..4]
+      fields.push @stage[x][y] if @isWithinStageBounds x, y
       x += dirX
       y += dirY
-
-      fields.push @stage[x][y] if @isWithinStageBounds x, y
 
     fields

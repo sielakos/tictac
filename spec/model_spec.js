@@ -22,7 +22,7 @@
       this.model.stage[1][4] = 1;
       return expect(this.model.isMoveAllowed(1, 4)).toBe(false);
     });
-    return it('getDirection works correctly', function() {
+    it('getDirection works correctly', function() {
       var fields;
       this.model.stage[10][10] = 1;
       this.model.stage[10][11] = 0;
@@ -42,6 +42,14 @@
       expect(fields).toEqual([-1, 1, -1, -1, -1]);
       fields = this.model.getDirection(9, 11, 1, -1);
       return expect(fields).toEqual([-1, 1, -1, -1, -1]);
+    });
+    return it('getDirection does not go outside stage bounds', function() {
+      var fields;
+      fields = this.model.getDirection(18, 18, 1, 1);
+      expect(fields.length).toBeLessThan(5);
+      expect(fields.length).toBe(2);
+      fields = this.model.getDirection(25, 18, 1, 1);
+      return expect(fields.length).toBe(0);
     });
   });
 
