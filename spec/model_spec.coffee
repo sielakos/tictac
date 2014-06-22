@@ -2,6 +2,12 @@ describe 'TicTacToeGameModel', ->
   beforeEach ->
     @model = new TicTacToeGameModel 20
 
+
+  it 'stage has correct size', ->
+    expect(@model.stage.length).toBe 20
+    for i in [0..19]
+      expect(@model.stage[i].length).toBe 20
+
   it 'getDirection works correctly', ->
     @model.stage[10][10] = 1
     @model.stage[10][11] = 0

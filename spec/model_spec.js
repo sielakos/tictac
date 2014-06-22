@@ -4,6 +4,15 @@
     beforeEach(function() {
       return this.model = new TicTacToeGameModel(20);
     });
+    it('stage has correct size', function() {
+      var i, _i, _results;
+      expect(this.model.stage.length).toBe(20);
+      _results = [];
+      for (i = _i = 0; _i <= 19; i = ++_i) {
+        _results.push(expect(this.model.stage[i].length).toBe(20));
+      }
+      return _results;
+    });
     return it('getDirection works correctly', function() {
       var fields;
       this.model.stage[10][10] = 1;
