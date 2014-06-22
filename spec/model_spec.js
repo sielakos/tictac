@@ -73,7 +73,7 @@
       fields = this.model.getDirection(25, 18, 1, 1);
       return expect(fields.length).toBe(0);
     });
-    return it('createDirectionChangers creates all 8 direction changers', function() {
+    it('createDirectionChangers creates all 8 direction changers', function() {
       var changer, dirChangers, expectedDirChangers, _i, _len, _results;
       dirChangers = this.model.createDirectionChangers();
       expect(dirChangers.length).toBe(8);
@@ -84,6 +84,29 @@
         _results.push(expect(dirChangers).toContain(changer));
       }
       return _results;
+    });
+    it('didGameEnded detects finished game', function() {
+      var i, j, _i, _j;
+      for (i = _i = 5; _i <= 10; i = ++_i) {
+        for (j = _j = 7; _j <= 13; j = ++_j) {
+          this.model.stage[i][j] = 0;
+        }
+      }
+      this.model.lastMove = {
+        x: 10,
+        y: 13
+      };
+      return expect(this.model.didGameEnded()).toEqual({
+        finished: true,
+        player: 0
+      });
+    });
+    return it('didGameEnded returns finished: false if game did not end yet', function() {
+      this.model.lastMove = {
+        x: 10,
+        y: 13
+      };
+      return expect(this.model.didGameEnded().finished).toEqual(false);
     });
   });
 

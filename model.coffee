@@ -22,17 +22,34 @@ class @TicTacToeGameModel
   getTileNumber: ->
     if @firstPlayer then 0 else 1
 
-  isGameFinished: ->
+  didGameEnded: ->
+    directions = @_getAllDirections()
+    player = @stage[@lastMove.x][@lastMove.y]
+    player = 0 if player == -1
 
+    for direction in directions
+      if @_checkDirection direction, player
+        return finished: true, player: player
 
+    return finished: false, player: player
+
+  _checkDirection: (direction, player) ->
+    ok = true
+    for field in direction
+      ok = ok and field == player
+    ok
+
+  _getAllDirections: ->
+    dirChangers = @createDirectionChangers()
+    (@getDirection @lastMove.x, @lastMove.y, changer[0], changer[1] for changer in dirChangers)
 
   createDirectionChangers: ->
-    directions = []
+    changers = []
     for i in [-1..1]
       for j in [-1..1]
         if i != 0 or j != 0
-          directions.push [i, j]
-    directions
+          changers.push [i, j]
+    changers
 
   getDirection: (x, y, dirX, dirY) ->
     fields = []

@@ -97,3 +97,18 @@ describe 'TicTacToeGameModel', ->
 
     for changer in expectedDirChangers
       expect(dirChangers).toContain changer
+
+  it 'didGameEnded detects finished game', ->
+    for i in [5..10]
+      for j in [7..13]
+        @model.stage[i][j] = 0
+
+    @model.lastMove = x: 10, y: 13
+
+    expect(@model.didGameEnded()).toEqual finished: true, player: 0
+
+  it 'didGameEnded returns finished: false if game did not end yet', ->
+    @model.lastMove = x: 10, y: 13
+
+    expect(@model.didGameEnded().finished).toEqual false
+

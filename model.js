@@ -51,19 +51,60 @@
       }
     };
 
-    TicTacToeGameModel.prototype.isGameFinished = function() {};
+    TicTacToeGameModel.prototype.didGameEnded = function() {
+      var direction, directions, player, _i, _len;
+      directions = this._getAllDirections();
+      player = this.stage[this.lastMove.x][this.lastMove.y];
+      if (player === -1) {
+        player = 0;
+      }
+      for (_i = 0, _len = directions.length; _i < _len; _i++) {
+        direction = directions[_i];
+        if (this._checkDirection(direction, player)) {
+          return {
+            finished: true,
+            player: player
+          };
+        }
+      }
+      return {
+        finished: false,
+        player: player
+      };
+    };
+
+    TicTacToeGameModel.prototype._checkDirection = function(direction, player) {
+      var field, ok, _i, _len;
+      ok = true;
+      for (_i = 0, _len = direction.length; _i < _len; _i++) {
+        field = direction[_i];
+        ok = ok && field === player;
+      }
+      return ok;
+    };
+
+    TicTacToeGameModel.prototype._getAllDirections = function() {
+      var changer, dirChangers, _i, _len, _results;
+      dirChangers = this.createDirectionChangers();
+      _results = [];
+      for (_i = 0, _len = dirChangers.length; _i < _len; _i++) {
+        changer = dirChangers[_i];
+        _results.push(this.getDirection(this.lastMove.x, this.lastMove.y, changer[0], changer[1]));
+      }
+      return _results;
+    };
 
     TicTacToeGameModel.prototype.createDirectionChangers = function() {
-      var directions, i, j, _i, _j;
-      directions = [];
+      var changers, i, j, _i, _j;
+      changers = [];
       for (i = _i = -1; _i <= 1; i = ++_i) {
         for (j = _j = -1; _j <= 1; j = ++_j) {
           if (i !== 0 || j !== 0) {
-            directions.push([i, j]);
+            changers.push([i, j]);
           }
         }
       }
-      return directions;
+      return changers;
     };
 
     TicTacToeGameModel.prototype.getDirection = function(x, y, dirX, dirY) {
