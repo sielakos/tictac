@@ -43,8 +43,6 @@ describe 'TicTacToeGameModel', ->
     @model.setField 1, 2
     expect(@model.firstPlayer).toBe player
 
-
-
   it 'getDirection works correctly', ->
     @model.stage[10][10] = 1
     @model.stage[10][11] = 0
