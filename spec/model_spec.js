@@ -96,17 +96,40 @@
         x: 10,
         y: 13
       };
-      return expect(this.model.didGameEnded()).toEqual({
+      expect(this.model.didGameEnded()).toEqual({
         finished: true,
         player: 0
       });
+      return expect(this.model.gameInProgress).toBe(false);
     });
-    return it('didGameEnded returns finished: false if game did not end yet', function() {
+    it('didGameEnded returns finished: false if game did not end yet', function() {
       this.model.lastMove = {
         x: 10,
         y: 13
       };
-      return expect(this.model.didGameEnded().finished).toEqual(false);
+      expect(this.model.didGameEnded().finished).toEqual(false);
+      return expect(this.model.gameInProgress).toBe(true);
+    });
+    return describe('restart', function() {
+      beforeEach(function() {
+        this.model.stage[1][2] = 23;
+        this.model.lastMove.x = 15;
+        this.model.firstPlayer = false;
+        this.model.gameInProgress = false;
+        return this.model.restart();
+      });
+      it('sets stage to default values', function() {
+        return expect(this.model.stage[1][2]).toBe(-1);
+      });
+      it('sets lastMove to default', function() {
+        return expect(this.model.lastMove.x).toBe(0);
+      });
+      it('sets firstPlayer to default', function() {
+        return expect(this.model.firstPlayer).toBe(true);
+      });
+      return it('game is in progress', function() {
+        return expect(this.model.gameInProgress).toBe(true);
+      });
     });
   });
 

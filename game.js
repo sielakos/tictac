@@ -20,6 +20,7 @@
     };
 
     TicTacGame.prototype.create = function() {
+      var style;
       this.game.stage.backgroundColor = "#2d2d2d";
       this.createLines();
       this.map = this.game.add.tilemap();
@@ -33,7 +34,14 @@
       this.marker.drawRect(0, 0, 32, 32);
       this.pointerMoved = false;
       this.game.camera.x = 25;
-      return this.game.camera.y = 25;
+      this.game.camera.y = 25;
+      style = {
+        font: "35pt Arial",
+        fill: "#ff0000",
+        align: "center"
+      };
+      this.endText = game.add.text(this.game.world.centerX - 200, this.game.world.centerY - 50, '', style);
+      return this.endText.visible = false;
     };
 
     TicTacGame.prototype.createLines = function() {
@@ -65,10 +73,26 @@
     };
 
     TicTacGame.prototype.setGameField = function(tileX, tileY) {
+      var finished, player, _ref;
       if (this.ticTacModel.isMoveAllowed(tileX, tileY)) {
         this.ticTacModel.setField(tileX, tileY);
-        return this.map.putTile(this.ticTacModel.getTileNumber(), tileX, tileY, this.layer);
+        this.map.putTile(this.ticTacModel.getTileNumber(), tileX, tileY, this.layer);
+        _ref = this.ticTacModel.didGameEnded(), finished = _ref.finished, player = _ref.player;
+        if (finished) {
+          return this.gameEnded(player);
+        }
       }
+    };
+
+    TicTacGame.prototype.gameEnded = function(player) {
+      this.endText.text = 'Game Over,\n';
+      if (player === 0) {
+        this.endText.text += 'first player';
+      } else {
+        this.endText.text += 'second player';
+      }
+      this.endText.text += ' won!';
+      return this.endText.visible = true;
     };
 
     TicTacGame.prototype.update = function() {
@@ -113,7 +137,7 @@
 
   })();
 
-  game = new Phaser.Game(480, 480, Phaser.AUTO, 'phaser-target', new TicTacGame());
+  game = new Phaser.Game(640, 640, Phaser.AUTO, 'phaser-target', new TicTacGame());
 
   this.game = game;
 

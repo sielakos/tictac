@@ -28,6 +28,13 @@ class TicTacGame
     @game.camera.x = 25
     @game.camera.y = 25
 
+    style =
+      font: "35pt Arial"
+      fill: "#ff0000"
+      align: "center"
+    @endText = game.add.text @game.world.centerX - 200, @game.world.centerY - 50, '', style
+    @endText.visible = false
+
   createLines: =>
     @lines = @game.add.graphics()
     @lines.lineStyle 1, 0x00ff00, 1
@@ -57,6 +64,18 @@ class TicTacGame
       @ticTacModel.setField tileX, tileY
       @map.putTile @ticTacModel.getTileNumber(), tileX, tileY, @layer
 
+      {finished, player} = @ticTacModel.didGameEnded()
+      @gameEnded player if finished
+
+  gameEnded: (player) ->
+    @endText.text = 'Game Over,\n'
+    if player == 0
+      @endText.text += 'first player'
+    else
+      @endText.text += 'second player'
+
+    @endText.text += ' won!'
+    @endText.visible = true
 
   update: =>
     tileX = @layer.getTileX @marker.x
@@ -91,6 +110,6 @@ class TicTacGame
     if tileY >= (endY - 2)
       @game.camera.y += 4
 
-game = new Phaser.Game 480, 480, Phaser.AUTO, 'phaser-target', new TicTacGame()
+game = new Phaser.Game 640, 640, Phaser.AUTO, 'phaser-target', new TicTacGame()
 @game = game
 

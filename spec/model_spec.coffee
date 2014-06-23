@@ -106,9 +106,32 @@ describe 'TicTacToeGameModel', ->
     @model.lastMove = x: 10, y: 13
 
     expect(@model.didGameEnded()).toEqual finished: true, player: 0
+    expect(@model.gameInProgress).toBe false
 
   it 'didGameEnded returns finished: false if game did not end yet', ->
     @model.lastMove = x: 10, y: 13
 
     expect(@model.didGameEnded().finished).toEqual false
+    expect(@model.gameInProgress).toBe true
+
+  describe 'restart', ->
+    beforeEach ->
+      @model.stage[1][2] = 23
+      @model.lastMove.x = 15
+      @model.firstPlayer = false
+      @model.gameInProgress = false
+
+      @model.restart()
+
+    it 'sets stage to default values', ->
+      expect(@model.stage[1][2]).toBe -1
+
+    it 'sets lastMove to default', ->
+      expect(@model.lastMove.x).toBe 0
+
+    it 'sets firstPlayer to default', ->
+      expect(@model.firstPlayer).toBe true
+
+    it 'game is in progress', ->
+      expect(@model.gameInProgress).toBe true
 

@@ -1,10 +1,6 @@
 class @TicTacToeGameModel
   constructor: (@mapSize = 20) ->
-    @stage = ((-1 for j in [0..mapSize - 1]) for i in [0..mapSize - 1])
-    @firstPlayer = true
-    @lastMove =
-      x: Math.round mapSize/2
-      y: Math.round mapSize/2
+    @restart()
 
   isMoveAllowed: (tileX, tileY) ->
     (@isWithinStageBounds tileX, tileY) and @stage[tileX][tileY] == -1
@@ -29,6 +25,7 @@ class @TicTacToeGameModel
 
     for direction in directions
       if @_checkDirection direction, player
+        @gameInProgress = false
         return finished: true, player: player
 
     return finished: false, player: player
@@ -60,3 +57,11 @@ class @TicTacToeGameModel
       y += dirY
 
     fields
+
+  restart: () =>
+    @stage = ((-1 for j in [0..@mapSize - 1]) for i in [0..@mapSize - 1])
+    @firstPlayer = true
+    @lastMove =
+      x: 0
+      y: 0
+    @gameInProgress = true
