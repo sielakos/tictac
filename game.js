@@ -7,6 +7,7 @@
     function TicTacGame(game) {
       this.game = game;
       this.update = __bind(this.update, this);
+      this.restart = __bind(this.restart, this);
       this.setGameField = __bind(this.setGameField, this);
       this.updateMarker = __bind(this.updateMarker, this);
       this.createLines = __bind(this.createLines, this);
@@ -37,7 +38,7 @@
       this.game.camera.y = 25;
       style = {
         font: "35pt Arial",
-        fill: "#ff0000",
+        fill: "#b0ffb0",
         align: "center"
       };
       this.endText = game.add.text(this.game.world.centerX - 200, this.game.world.centerY - 50, '', style);
@@ -67,8 +68,10 @@
       this.marker.y = (this.layer.getTileY(game.input.activePointer.worldY)) * 32;
       tileX = this.layer.getTileX(this.marker.x);
       tileY = this.layer.getTileY(this.marker.y);
-      if (this.game.input.mousePointer.isDown) {
+      if (this.game.input.mousePointer.isDown && this.ticTacModel.gameInProgress) {
         return this.setGameField(tileX, tileY);
+      } else if (this.game.input.mousePointer.isDown) {
+        return this.restart();
       }
     };
 
@@ -93,6 +96,12 @@
       }
       this.endText.text += ' won!';
       return this.endText.visible = true;
+    };
+
+    TicTacGame.prototype.restart = function() {
+      this.ticTacModel.restart();
+      this.map.fill(2, 0, 0, this.ticTacModel.mapSize, this.ticTacModel.mapSize, this.layer);
+      return this.endText.visible = false;
     };
 
     TicTacGame.prototype.update = function() {

@@ -30,7 +30,7 @@ class TicTacGame
 
     style =
       font: "35pt Arial"
-      fill: "#ff0000"
+      fill: "#b0ffb0"
       align: "center"
     @endText = game.add.text @game.world.centerX - 200, @game.world.centerY - 50, '', style
     @endText.visible = false
@@ -56,8 +56,10 @@ class TicTacGame
     tileX = @layer.getTileX @marker.x
     tileY = @layer.getTileY @marker.y
 
-    if @game.input.mousePointer.isDown
+    if @game.input.mousePointer.isDown and @ticTacModel.gameInProgress
       @setGameField tileX, tileY
+    else if @game.input.mousePointer.isDown
+      @restart()
 
   setGameField: (tileX, tileY) =>
     if @ticTacModel.isMoveAllowed tileX, tileY
@@ -76,6 +78,11 @@ class TicTacGame
 
     @endText.text += ' won!'
     @endText.visible = true
+
+  restart: =>
+    @ticTacModel.restart()
+    @map.fill(2, 0,0, @ticTacModel.mapSize, @ticTacModel.mapSize, @layer)
+    @endText.visible = false
 
   update: =>
     tileX = @layer.getTileX @marker.x

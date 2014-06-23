@@ -58,7 +58,7 @@ class @TicTacToeGameModel
 
     fields
 
-  restart: () =>
+  restart: =>
     @stage = ((-1 for j in [0..@mapSize - 1]) for i in [0..@mapSize - 1])
     @firstPlayer = true
     @lastMove =
