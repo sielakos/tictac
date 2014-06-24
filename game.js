@@ -9,12 +9,35 @@
       this.update = __bind(this.update, this);
       this.restart = __bind(this.restart, this);
       this.setGameField = __bind(this.setGameField, this);
-      this.updateMarker = __bind(this.updateMarker, this);
+      this.onMove = __bind(this.onMove, this);
       this.createLines = __bind(this.createLines, this);
+      this.createRestartCallback = __bind(this.createRestartCallback, this);
+      this.createPlayers = __bind(this.createPlayers, this);
       this.create = __bind(this.create, this);
       this.preload = __bind(this.preload, this);
+      this.removeCallback = __bind(this.removeCallback, this);
+      this.addClickCallback = __bind(this.addClickCallback, this);
       this.ticTacModel = new TicTacToeGameModel(20);
+      this.clickCallbacks = [];
     }
+
+    TicTacGame.prototype.addClickCallback = function(callback) {
+      this.clickCallbacks.push(callback);
+      return callback.clickCallbackId = Math.random();
+    };
+
+    TicTacGame.prototype.removeCallback = function(callback) {
+      var element, newCallbacks, _i, _len, _ref;
+      newCallbacks = [];
+      _ref = this.clickCallbacks;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        element = _ref[_i];
+        if (element.clickCallbackId !== callback.clickCallbackId) {
+          newCallbacks.push(element);
+        }
+      }
+      return this.clickCallbacks = newCallbacks;
+    };
 
     TicTacGame.prototype.preload = function() {
       return this.game.load.image('tiles', 'tiles.png');
@@ -22,13 +45,15 @@
 
     TicTacGame.prototype.create = function() {
       var style;
+      this.createPlayers();
+      this.createRestartCallback();
       this.game.stage.backgroundColor = "#2d2d2d";
       this.createLines();
       this.map = this.game.add.tilemap();
       this.map.addTilesetImage('tiles');
       this.layer = this.map.create('level', this.ticTacModel.mapSize, this.ticTacModel.mapSize, 32, 32);
       this.layer.resizeWorld();
-      this.game.input.setMoveCallback(this.updateMarker, this);
+      this.game.input.setMoveCallback(this.onMove, this);
       this.cursors = this.game.input.keyboard.createCursorKeys();
       this.marker = this.game.add.graphics();
       this.marker.lineStyle(2, 0x000000, 1);
@@ -43,6 +68,27 @@
       };
       this.endText = game.add.text(this.game.world.centerX - 200, this.game.world.centerY - 50, '', style);
       return this.endText.visible = false;
+    };
+
+    TicTacGame.prototype.createPlayers = function() {
+      this.playerManager = new PlayerManager(this.ticTacModel);
+      this.playerManager.firstPlayer = new HumanPlayer(this);
+      return this.playerManager.secondPlayer = new HumanPlayer(this);
+    };
+
+    TicTacGame.prototype.createRestartCallback = function() {
+      var active;
+      active = false;
+      return this.addClickCallback((function(_this) {
+        return function() {
+          if (!active && !_this.ticTacModel.gameInProgress) {
+            return active = true;
+          } else if (active) {
+            _this.restart();
+            return active = false;
+          }
+        };
+      })(this));
     };
 
     TicTacGame.prototype.createLines = function() {
@@ -61,18 +107,24 @@
       return _results;
     };
 
-    TicTacGame.prototype.updateMarker = function() {
-      var tileX, tileY;
-      this.pointerMoved = true;
-      this.marker.x = (this.layer.getTileX(game.input.activePointer.worldX)) * 32;
-      this.marker.y = (this.layer.getTileY(game.input.activePointer.worldY)) * 32;
-      tileX = this.layer.getTileX(this.marker.x);
-      tileY = this.layer.getTileY(this.marker.y);
-      if (this.game.input.mousePointer.isDown && this.ticTacModel.gameInProgress) {
-        return this.setGameField(tileX, tileY);
-      } else if (this.game.input.mousePointer.isDown) {
-        return this.restart();
+    TicTacGame.prototype.onMove = function() {
+      var callback, _i, _len, _ref, _results;
+      this.updateMarker();
+      if (this.game.input.mousePointer.isDown) {
+        _ref = this.clickCallbacks;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          callback = _ref[_i];
+          _results.push(callback());
+        }
+        return _results;
       }
+    };
+
+    TicTacGame.prototype.updateMarker = function() {
+      this.pointerMoved = true;
+      this.marker.x = (this.layer.getTileX(this.game.input.activePointer.worldX)) * 32;
+      return this.marker.y = (this.layer.getTileY(this.game.input.activePointer.worldY)) * 32;
     };
 
     TicTacGame.prototype.setGameField = function(tileX, tileY) {
@@ -110,6 +162,9 @@
       tileY = this.layer.getTileY(this.marker.y);
       if (this.pointerMoved) {
         this.cursorIsNearEdgeAction(tileX, tileY);
+      }
+      if (this.ticTacModel.gameInProgress) {
+        this.playerManager.askForMove(this.setGameField);
       }
       if (this.cursors.left.isDown) {
         return this.game.camera.x -= 4;

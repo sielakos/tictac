@@ -1,11 +1,27 @@
 class TicTacGame
   constructor: (@game) ->
     @ticTacModel = new TicTacToeGameModel 20
+    @clickCallbacks = []
+
+  addClickCallback: (callback) =>
+    @clickCallbacks.push callback
+    callback.clickCallbackId = Math.random()
+
+  removeCallback: (callback) =>
+    newCallbacks = []
+    for element in @clickCallbacks
+      if element.clickCallbackId != callback.clickCallbackId
+        newCallbacks.push element
+
+    @clickCallbacks = newCallbacks
 
   preload: =>
     @game.load.image 'tiles', 'tiles.png'
 
   create: =>
+    @createPlayers()
+    @createRestartCallback()
+
     @game.stage.backgroundColor = "#2d2d2d"
 
     @createLines()
@@ -16,7 +32,7 @@ class TicTacGame
     @layer = @map.create 'level', @ticTacModel.mapSize, @ticTacModel.mapSize, 32, 32
     @layer.resizeWorld()
 
-    @game.input.setMoveCallback @updateMarker, this
+    @game.input.setMoveCallback @onMove, this
 
     @cursors = @game.input.keyboard.createCursorKeys()
 
@@ -35,6 +51,20 @@ class TicTacGame
     @endText = game.add.text @game.world.centerX - 200, @game.world.centerY - 50, '', style
     @endText.visible = false
 
+  createPlayers: =>
+    @playerManager = new PlayerManager @ticTacModel
+    @playerManager.firstPlayer = new HumanPlayer this
+    @playerManager.secondPlayer = new HumanPlayer this
+
+  createRestartCallback: =>
+    active = false
+    @addClickCallback =>
+      if not active and not @ticTacModel.gameInProgress
+        active = true
+      else if active
+        @restart()
+        active = false
+
   createLines: =>
     @lines = @game.add.graphics()
     @lines.lineStyle 1, 0x00ff00, 1
@@ -47,19 +77,17 @@ class TicTacGame
       @lines.moveTo i*32, 0
       @lines.lineTo i*32, @ticTacModel.mapSize*32
 
-  updateMarker: =>
+  onMove: =>
+    @updateMarker()
+
+    if @game.input.mousePointer.isDown
+      callback() for callback in @clickCallbacks
+
+  updateMarker: ->
     @pointerMoved = true
 
-    @marker.x = (@layer.getTileX game.input.activePointer.worldX) * 32
-    @marker.y = (@layer.getTileY game.input.activePointer.worldY) * 32
-
-    tileX = @layer.getTileX @marker.x
-    tileY = @layer.getTileY @marker.y
-
-    if @game.input.mousePointer.isDown and @ticTacModel.gameInProgress
-      @setGameField tileX, tileY
-    else if @game.input.mousePointer.isDown
-      @restart()
+    @marker.x = (@layer.getTileX @game.input.activePointer.worldX) * 32
+    @marker.y = (@layer.getTileY @game.input.activePointer.worldY) * 32
 
   setGameField: (tileX, tileY) =>
     if @ticTacModel.isMoveAllowed tileX, tileY
@@ -89,6 +117,9 @@ class TicTacGame
     tileY = @layer.getTileY @marker.y
 
     @cursorIsNearEdgeAction tileX, tileY if @pointerMoved
+
+    if @ticTacModel.gameInProgress
+      @playerManager.askForMove @setGameField
 
     if @cursors.left.isDown
       @game.camera.x -= 4
