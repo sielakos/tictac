@@ -5,6 +5,7 @@
         <item url="file://$PROJECT_DIR$/players.js" />
         <item url="file://$PROJECT_DIR$/game.js" />
         <item url="file://$PROJECT_DIR$/bower_components/jasmine/node_modules/grunt-contrib-jshint/node_modules/jshint/node_modules/cli/examples/static.js" />
+        <item url="file://$PROJECT_DIR$/ai.js" />
         <item url="file://$PROJECT_DIR$/model.js" />
         <item url="file://$PROJECT_DIR$/spec/model_spec.js" />
       </sourceFilesUrls>
@@ -14,6 +15,7 @@
       <root url="file://$PROJECT_DIR$/game.js" />
       <root url="file://$PROJECT_DIR$/bower_components/jasmine/node_modules/grunt-contrib-jshint/node_modules/jshint/node_modules/cli/examples/static.js" />
       <root url="file://$PROJECT_DIR$/model.js" />
+      <root url="file://$PROJECT_DIR$/ai.js" />
       <root url="file://$PROJECT_DIR$/spec/model_spec.js" />
     </CLASSES>
     <SOURCES />
