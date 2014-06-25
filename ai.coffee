@@ -1,17 +1,40 @@
-class @HumanPlayer
-  constructor: (@ticTac) ->
-    @active = false
-    @callback = null
+class @SimpleAiPlayer
+  constructor: (@makeModelCopy, @playerNumber) ->
+    @valueMatrix = null
 
-    @ticTac.addClickCallback @makeMove
+  askForMove: (callback) ->
+    window.setTimeout (@calculcateMove callback), 0
 
-  makeMove: =>
-    if @active
-      tileX = @ticTac.layer.getTileX @ticTac.game.input.activePointer.worldX
-      tileY = @ticTac.layer.getTileY @ticTac.game.input.activePointer.worldY
+  calculcateMove: (callback) ->
+    =>
+      model = @makeModelCopy()
+      @valueMatrix = @createValueMatrixIfDoesntExists @valueMatrix
 
-      @callback tileX, tileY if @callback?
-      @active = false
+  createValueMatrixIfDoesntExists: (model, matrix) ->
+    if not matrix
+      ((0 for j in [0 .. model.mapSize - 1]) for i in [0 .. model.mapSize -1])
+    else
+      matrix
 
-  askForMove: (@callback) ->
-    @active = true
+  updatePointsMatrix: (model) ->
+
+
+  getPoints: (model) ->
+    changers = model.createDirectionChangers()
+    points = [model.lastMove]
+
+    for changer in changers
+      x = model.lastMove.x
+      y = model.lastMove.y
+      for i in [1..4]
+        x += changer[0]
+        y += changer[1]
+        points.push x: x, y: y if model.isWithinStageBounds x, y
+
+    points
+
+
+
+
+
+

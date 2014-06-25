@@ -1,4 +1,4 @@
-class @TicTacToeGameModel
+class TicTacToeGameModel
   constructor: (@mapSize = 20) ->
     @restart()
 
@@ -19,7 +19,7 @@ class @TicTacToeGameModel
     if @firstPlayer then 0 else 1
 
   didGameEnded: ->
-    directions = @_getAllDirections()
+    directions = @getAllDirections()
     player = @stage[@lastMove.x][@lastMove.y]
     player = 0 if player == -1
 
@@ -36,7 +36,7 @@ class @TicTacToeGameModel
       ok = ok and field == player
     ok
 
-  _getAllDirections: ->
+  getAllDirections: ->
     dirChangers = @createDirectionChangers()
     (@getDirection @lastMove.x, @lastMove.y, changer[0], changer[1] for changer in dirChangers)
 
@@ -65,3 +65,14 @@ class @TicTacToeGameModel
       x: 0
       y: 0
     @gameInProgress = true
+
+  clone: =>
+    other = TicTacToeGameModel @mapSize
+    other.stage = ((el for el in row) for row in @stage)
+    other.firstPlayer = @firstPlayer
+    other.lastMove = @lastMove
+    other.gameInProgress = @gameInProgress
+
+    other
+
+@TicTacToeGameModel = TicTacToeGameModel
